@@ -2,7 +2,6 @@ FROM python:3.10.17-slim-bullseye AS build
 
 WORKDIR /app
 
-# Instala dependências necessárias pro PyInstaller funcionar
 RUN apt-get update && apt-get install -y binutils gcc
 
 COPY . .
