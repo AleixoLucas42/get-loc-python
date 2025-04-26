@@ -87,6 +87,8 @@ def localizacao():
     headers = {
         "Authorization": f"Basic {os.environ['BASIC_AUTH']}"
     }
+    logging.debug(f"Headers: {headers}")
+    logging.debug(f"Pipeline url: {os.environ['PIPELINE_URL']}")
     response = requests.request("GET", os.environ["PIPELINE_URL"], headers=headers, data={}, verify=False)
     if response.status_code == 201:
         logging.info("Pipeline called")
