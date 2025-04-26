@@ -1,9 +1,15 @@
 from flask import Flask, request, jsonify, render_template_string
 import os
 import requests
+import logging
 
 global last_loc_received
 last_loc_received = ""
+logging.basicConfig(
+    level=os.getenv("LOG_LEVEL", "INFO"),
+    format="%(asctime)s [%(levelname)s] 1#1: %(message)s",
+    datefmt="%Y/%m/%d %H:%M:%S",
+)
 
 app = Flask(__name__)
 
@@ -77,16 +83,15 @@ def localizacao():
     acc = data.get('accuracy')
     maps_url = f"https://www.google.com/maps?q={lat},{lon}"
     last_loc_received = maps_url
-    print(f"User on: {lat},{lon} (±{acc}m) -> {maps_url}")
+    logging.info(f"User on: {lat},{lon} (±{acc}m) -> {maps_url}")
     headers = {
         "Authorization": f"Basic {os.environ['BASIC_AUTH']}"
     }
-    print(headers)
     response = requests.request("GET", os.environ["PIPELINE_URL"], headers=headers, data={}, verify=False)
     if response.status_code == 201:
-        print("Pipeline called")
+        logging.info("Pipeline called")
     else:
-        print(f"Error: {response.status_code} {response.text}")
+        logging.error(f"Error: {response.status_code} {response.text}")
     return jsonify({
         "status": "recebido",
         "google_maps": maps_url
